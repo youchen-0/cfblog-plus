@@ -45,11 +45,6 @@ const OPT = { //网站配置
   `,//评论区代码
   "widgetOther":`
   `,//20201224新增参数,用于右侧 小部件扩展
-  "otherCodeA":`热度`,//模板开发用的其他自定义变量
-  "otherCodeB":``,//
-  "otherCodeC":``,//
-  "otherCodeD":``,//
-  "otherCodeE":``,//
   "copyRight" :`Powered by <a href="https://www.cloudflare.com">Cloudflare</a> & <a href="https://blog.arrontg.cf">CFBlog-Plus</a> & <a href="https://blog.gezhong.vip">CF-Blog </a>`,//自定义版权信息,建议保留大公无私的 Coudflare 和 作者 的链接
   "robots":`User-agent: *
 Disallow: /admin`,//robots.txt设置
@@ -391,10 +386,6 @@ async function renderBlog(url){
   }
   if(pageSize){
     OPT.pageSize=parseInt(pageSize);
-  }
-  //如果采用默认default主题，则改为加载default2.0主题
-  if(OPT.theme_github_path+"default/"==OPT.themeURL){
-    OPT.themeURL=OPT.theme_github_path+"default2.0/";
   }
   console.log("theme pageSize",OPT.pageSize,OPT.themeURL)
   
