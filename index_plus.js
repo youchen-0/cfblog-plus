@@ -9,7 +9,7 @@ const ACCOUNT = { //账号相关，安全性更高
   "cacheZoneId":"935xxxxxxxxxxxx",//区域 ID
   "cacheToken":"AQxxxxxxxx",//API token
 
-  "kv_var": this['CFBLOG'],//workers绑定kv时用的变量名
+  "kv_var": this['CFBLOG'],//workers绑定kv时用的变量名和命名空间
 }
 
 const OPT = { //网站配置
@@ -21,10 +21,8 @@ const OPT = { //网站配置
   "keyWords":"cloudflare,KV,workers,blog",//关键字
   "logo":"https://cdn.jsdelivr.net/gh/Arronlong/cfblog-plus@master/themes/JustNews/files/logo2.png",//JustNews主题的logo
 
-  "theme_github_path":"https://cdn.jsdelivr.net/gh/Arronlong/cfblog-plus@master/themes/",//主题路径
-  "themeURL" : "https://raw.githubusercontent.com/Arronlong/cfblog-plus/master/themes/JustNews/", // 模板地址,以 "/"" 结尾
-  //"search_xml_url":"", //search.xml外部链接，可通过github的action自动生成，不设置则实时生成
-  //"sitemap_xml_url":"", //sitemap.xml外部链接，可通过github的action自动生成，不设置则实时生成
+  "theme_github_path":"https://cdn.jsdelivr.net/gh/Arronlong/cfblog-plus@master/themes/",//主题路径,必须以 "/"" 结尾,否则影响运行
+  "themeURL" : "https://raw.githubusercontent.com/Arronlong/cfblog-plus/master/themes/JustNews/", // 模板地址,必须以 "/"" 结尾,否则影响运行
   
   "pageSize" : 5,//每页文章数
   "recentlySize" : 6,//最近文章数
@@ -47,7 +45,8 @@ const OPT = { //网站配置
   `,//20201224新增参数,用于右侧 小部件扩展
   "copyRight" :`Powered by <a href="https://www.cloudflare.com">Cloudflare</a> & <a href="https://blog.arrontg.cf">CFBlog-Plus</a> & <a href="https://blog.gezhong.vip">CF-Blog </a>`,//自定义版权信息,建议保留大公无私的 Coudflare 和 作者 的链接
   "robots":`User-agent: *
-Disallow: /admin`,//robots.txt设置
+Disallow: /admin`
+Sitemap: https://域名/sitemap.xml",//robots.txt设置
   
   /*--前后台共用参数--*/
   
@@ -137,7 +136,9 @@ Disallow: /admin`,//robots.txt设置
     },300)
 
     //默认图片，工具：https://tool.lu/imageholder/
-    if($('#img').val()=="")$('#img').val('https://cdn.jsdelivr.net/gh/Arronlong/cdn@master/cfblog/cfblog-plus.png');
+    //if($('#img').val()=="")$('#img').val('https://cdn.jsdelivr.net/gh/Arronlong/cdn@master/cfblog/cfblog-plus.png');
+    //默认时间设置为index
+    if($('#link').val()=="")$('#link').val('index');
     //默认时间设置为当前时间
     if($('#createDate').val()=="")$('#createDate').val(new Date(new Date().getTime()+8*60*60*1000).toJSON().substr(0,16));
     `, //后台编辑页面脚本
@@ -152,13 +153,6 @@ Disallow: /admin`,//robots.txt设置
   //默认为非私密博客
   if(null==OPT.privateBlog){
     OPT.privateBlog=false;
-  }
-  //处理themeURL、theme_github_path参数设定
-  if(OPT.themeURL.substr(-1)!='/'){
-    OPT.themeURL=OPT.themeURL+'/';
-  }
-  if(OPT.theme_github_path.substr(-1)!='/'){
-    OPT.theme_github_path=OPT.theme_github_path+'/';
   }
   //置顶样式对于前台来说，与codeBeforHead结合即可
   if(OPT.top_flag_style){
@@ -275,7 +269,7 @@ async function handle_favicon(request){
 
 //访问: robots.txt
 async function handle_robots(request){
-  return new Response(OPT.robots+"\nSitemap: https://"+OPT.siteDomain+"/sitemap.xml",{
+  return new Response(OPT.robots,{
     headers:{
       "content-type":"text/plain;charset=UTF-8"
     },
@@ -285,40 +279,20 @@ async function handle_robots(request){
 
 //访问: sitemap.xml
 async function handle_sitemap(request){
-  //如果设置了参数，则使用参数指定的url
-  //可使用github action方式自动定期更新
+  //实时获取结构,读取文章列表，并按照特定的xml格式进行组装
   let xml;
-  if(OPT.sitemap_xml_url){
-    
-    //cf代理方式，速度可以，实时性更好
-    let url = new URL(request.url)
-    url.href = OPT.sitemap_xml_url.replace('cdn.jsdelivr.net/gh','raw.githubusercontent.com').replace('@','/');
-    xml = await fetch(new Request(url, request));
-    xml = await xml.text();
-    
-    ////302方式，如果使用jsdelivr作为cdn，速度快，但更新有延迟
-    //return new Response("",{
-    //    headers:{
-    //        "location":OPT.sitemap_xml_url
-    //    },
-    //    status:302
-    //});
-  
-  }else{ //未配置参数，则实时获取结构
-  
-    //读取文章列表，并按照特定的xml格式进行组装
-    let articles_all=await getArticlesList()
-    xml='<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
-    for(var i=0;i<articles_all.length;i++){
-      xml+="\n\t<url>",
-      xml+="\n\t\t<loc>https://"+OPT.siteDomain+"/article/"+articles_all[i].id+"/"+articles_all[i].link+".html</loc>",
-      xml+="\n\t\t<lastmod>"+articles_all[i].createDate.substr(0,10)+"</lastmod>",
-      xml+="\n\t\t<changefreq>"+(void 0===articles_all[i].changefreq?"daily":articles_all[i].changefreq)+"</changefreq>",
-      xml+="\n\t\t<priority>"+(void 0===articles_all[i].priority?"0.5":articles_all[i].priority)+"</priority>",
-      xml+="\n\t</url>";
-    }
-    xml+="\n</urlset>"
+  let articles_all=await getArticlesList()
+  xml='<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
+  for(var i=0;i<articles_all.length;i++){
+    xml+="\n\t<url>",
+    xml+="\n\t\t<loc>https://"+OPT.siteDomain+"/article/"+articles_all[i].id+"/"+articles_all[i].link+".html</loc>",
+    xml+="\n\t\t<lastmod>"+articles_all[i].createDate.substr(0,10)+"</lastmod>",
+    xml+="\n\t\t<changefreq>"+(void 0===articles_all[i].changefreq?"daily":articles_all[i].changefreq)+"</changefreq>",
+    xml+="\n\t\t<priority>"+(void 0===articles_all[i].priority?"0.5":articles_all[i].priority)+"</priority>",
+    xml+="\n\t</url>";
   }
+  xml+="\n</urlset>"
+  
   return new Response(xml,{
     headers:{
         "content-type":"text/xml;charset=UTF-8"
@@ -329,43 +303,23 @@ async function handle_sitemap(request){
 
 //访问: search.xml
 async function handle_search(request){
-  //如果设置了参数，则使用参数指定的url
-  //可使用github action方式自动定期更新
+  //实时获取结构,读取文章列表，并按照特定的xml格式进行组装
   let xml;
-  if(OPT.search_xml_url){
-    
-    //cf代理方式，速度可以，实时性更好
-    let url = new URL(request.url)
-    url.href = OPT.search_xml_url.replace('cdn.jsdelivr.net/gh','raw.githubusercontent.com').replace('@','/');
-    xml = await fetch(new Request(url, request));
-    xml = await xml.text();
-    
-    ////302方式，如果使用jsdelivr作为cdn，速度快，但更新有延迟
-    //return new Response("",{
-    //    headers:{
-    //        "location":OPT.search_xml_url
-    //    },
-    //    status:302
-    //});
-  
-  }else{ //未配置参数，则实时获取结构
-  
-    //读取文章列表，并按照特定的xml格式进行组装
-    let articles_all=await getArticlesList()
-    xml='<?xml version="1.0" encoding="UTF-8"?>\n<blogs>';
-    for(var i=0;i<articles_all.length;i++){
-      xml+="\n\t<blog>",
-      xml+="\n\t\t<title>"+articles_all[i].title+"</title>";
-      let article = await getArticle(articles_all[i].id);
-      if(null != article){
-        xml+="\n\t\t<content>"+article.contentMD.replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('&','&amp;')+"</content>"
-      }
-      xml+="\n\t\t<url>https://"+OPT.siteDomain+"/article/"+articles_all[i].id+"/"+articles_all[i].link+".html</url>",
-      xml+="\n\t\t<time>"+articles_all[i].createDate.substr(0,10)+"</time>",
-      xml+="\n\t</blog>";
+  let articles_all=await getArticlesList()
+  xml='<?xml version="1.0" encoding="UTF-8"?>\n<blogs>';
+  for(var i=0;i<articles_all.length;i++){
+    xml+="\n\t<blog>",
+    xml+="\n\t\t<title>"+articles_all[i].title+"</title>";
+    let article = await getArticle(articles_all[i].id);
+    if(null != article){
+      xml+="\n\t\t<content>"+article.contentMD.replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('&','&amp;')+"</content>"
     }
-    xml+="\n</blogs>"
+    xml+="\n\t\t<url>https://"+OPT.siteDomain+"/article/"+articles_all[i].id+"/"+articles_all[i].link+".html</url>",
+    xml+="\n\t\t<time>"+articles_all[i].createDate.substr(0,10)+"</time>",
+    xml+="\n\t</blog>";
   }
+  xml+="\n</blogs>"
+  
   return new Response(xml,{
     headers:{
       "content-type":"text/xml;charset=UTF-8"
@@ -754,6 +708,7 @@ async function handle_admin(request){
     
     //校验参数完整性
     if(title.length>0
+      && link.length>0
       && createDate.length>0
       && category.length>0
       && contentMD.length>0
@@ -855,6 +810,7 @@ async function handle_admin(request){
         
     //校验参数完整性
     if(title.length>0
+      && link.length>0
       && createDate.length>0
       && category.length>0
       && contentMD.length>0
