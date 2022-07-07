@@ -4,7 +4,7 @@
 const ACCOUNT = { //账号相关，安全性更高
 
   "user" : "admin", //博客后台用户名
-  "password" : "cfblog-plus", //博客后台密码
+  "password" : "password", //博客后台密码
   "third_token" : "cfblog", //开放token，当前仅允许访问/admin/search.xml，/admin/sitemap.xml时可用，在cfblog_token的头信息中传递
   "cacheZoneId":"935xxxxxxxxxxxx",//区域 ID
   "cacheToken":"AQxxxxxxxx",//API token
@@ -16,13 +16,13 @@ const OPT = { //网站配置
 
   /*--前台参数--*/
   "siteDomain" : "域名",// 域名(不带https 也不带/)
-  "siteName" : "CFBLOG-Plus",//博客名称
-  "siteDescription":"CFBLOG-Plus" ,//博客描述
+  "siteName" : "CFBLOG-Pro",//博客名称
+  "siteDescription":"CFBLOG-Pro" ,//博客描述
   "keyWords":"cloudflare,KV,workers,blog",//关键字
-  "logo":"https://cdn.jsdelivr.net/gh/Arronlong/cfblog-plus@master/themes/JustNews/files/logo2.png",//JustNews主题的logo
+  "logo":"https://cdn.jsdelivr.net/gh/youchen-0/cfblog-pro@master/themes/JustNews/files/logo2.png",//JustNews主题的logo
 
-  "theme_github_path":"https://cdn.jsdelivr.net/gh/Arronlong/cfblog-plus@master/themes/",//主题路径,必须以 "/"" 结尾,否则影响运行
-  "themeURL" : "https://raw.githubusercontent.com/Arronlong/cfblog-plus/master/themes/JustNews/", // 模板地址,必须以 "/"" 结尾,否则影响运行
+  "theme_github_path":"https://cdn.jsdelivr.net/gh/youchen-0/cfblog-pro@master/themes/",//主题路径,必须以 "/"" 结尾,否则影响运行
+  "themeURL" : "https://raw.githubusercontent.com/youchen-0/cfblog-pro/master/themes/JustNews/", // 模板地址,必须以 "/"" 结尾,否则影响运行
   
   "pageSize" : 5,//每页文章数
   "recentlySize" : 6,//最近文章数
@@ -43,10 +43,10 @@ const OPT = { //网站配置
   `,//评论区代码
   "widgetOther":`
   `,//20201224新增参数,用于右侧 小部件扩展
-  "copyRight" :`Powered by <a href="https://www.cloudflare.com">Cloudflare</a> & <a href="https://blog.arrontg.cf">CFBlog-Plus</a> & <a href="https://blog.gezhong.vip">CF-Blog </a>`,//自定义版权信息,建议保留大公无私的 Coudflare 和 作者 的链接
+  "copyRight" :`Powered by <a href="https://blog.youchen.cf">CFblog-pro</a> & <a href="https://blog.arrontg.cf">CFBlog-Plus</a> & <a href="https://blog.gezhong.vip">CF-Blog </a>`,//自定义版权信息,建议保留大公无私的 Coudflare 和 作者 的链接
   "robots":`User-agent: *
-Disallow: /admin`
-Sitemap: https://域名/sitemap.xml",//robots.txt设置
+Disallow: /admin
+Sitemap: https://域名/sitemap.xml`,//robots.txt设置
   
   /*--前后台共用参数--*/
   
