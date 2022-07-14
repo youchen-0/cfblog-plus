@@ -45,22 +45,23 @@
 
 				<div class="form-group" style="width: 98%">
 					<input type="hidden" class="form-control" name="id" id="id" readonly required="true">
-					<input type="text" class="form-control" name="title" id="title" placeholder="标题" style="width: 800px;" required="true">
+					<label for="exampleInputEmail2">标题<span style="color: red;">*</span></label>
+					<input type="text" class="form-control" name="title" id="title" placeholder="" style="width: 800px;" required="true">
 				</div>
 				<div class="form-group">
 					<label for="exampleInputEmail2">特色图片</label>
 					<input type="url" class="form-control" style="width: 400px;"  name="img" id="img" placeholder="" >
 				</div>
 				<div class="form-group">
-					<label for="exampleInputEmail2">永久链接</label>
+					<label for="exampleInputEmail2">永久链接<span style="color: red;">*</span></label>
 					<input type="text" class="form-control" name="link" id="link" placeholder="" style="vertical-align:left !important;" required="true">
 				</div>
 				<div class="form-group">
-					<label for="exampleInputEmail2">创建日期</label>
+					<label for="exampleInputEmail2">创建日期<span style="color: red;">*</span></label>
 					<input type="datetime-local" class="form-control" id="createDate" name="createDate" placeholder="" style="vertical-align:left !important;" required="true">
 				</div>
 				<div class="form-group">
-					<label for="exampleInputEmail2">分类</label>
+					<label for="exampleInputEmail2">分类<span style="color: red;">*</span></label>
 					<select class="selectpicker" multiple name="category[]" id="category">
 					</select>
 				</div>
