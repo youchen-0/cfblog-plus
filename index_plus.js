@@ -42,7 +42,6 @@ const OPT = { //网站配置
   </script>
   `,//评论区代码
   "widgetOther":``,//20201224新增参数,用于右侧 小部件扩展
-  "otherCodeA":`访问量`,//模板开发用的其他自定义变量
   "copyRight" :`Powered by <a href="https://blog.youchen.cf">CFblog-pro</a> & <a href="https://blog.arrontg.cf">CFBlog-Plus</a> & <a href="https://blog.gezhong.vip">CF-Blog </a>`,//自定义版权信息,建议保留大公无私的 Coudflare 和 作者 的链接
   "robots":`User-agent: *
 Disallow: /admin
