@@ -31,7 +31,7 @@ const OPT = { //网站配置
   "cacheTime" : 60*60*24*2, //文章在浏览器的缓存时长(秒),建议=文章更新频率
   "html404" : `<b>404</b>`,//404页面代码
   "codeBeforHead":`
-  <script src="https://cdn.staticfile.org/jquery/2.2.4/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@2.2.4/dist/jquery.min.js"></script>
   `,//其他代码,显示在</head>前
   "codeBeforBody":`
   `,//其他代码,显示在</body>前
