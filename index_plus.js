@@ -30,17 +30,9 @@ const OPT = { //网站配置
   "readMoreLength":150,//阅读更多截取长度
   "cacheTime" : 60*60*24*2, //文章在浏览器的缓存时长(秒),建议=文章更新频率
   "html404" : `<b>404</b>`,//404页面代码
-  "codeBeforHead":`
-  <script src="https://cdn.jsdelivr.net/npm/jquery@2.2.4/dist/jquery.min.js"></script>
-  `,//其他代码,显示在</head>前
-  "codeBeforBody":`
-  `,//其他代码,显示在</body>前
-  "commentCode":`
-  <script>
-    //文章浏览页 添加编辑直达功能
-    $(".entry-info").append('<a style="float:right;margin-left:5px;" href="'+location.href.replace('/article/','/admin/edit/')+'" target="_blank">编辑</a>')
-  </script>
-  `,//评论区代码
+  "codeBeforHead":``,//其他代码,显示在</head>前
+  "codeBeforBody":``,//其他代码,显示在</body>前
+  "commentCode":`<script>$(".entry-info").append('<a style="float:right;margin-left:5px;" href="'+location.href.replace('/article/','/admin/edit/')+'" target="_blank">编辑</a>')</script>`,//评论区代码(文章浏览页 添加编辑直达功能)
   "widgetOther":``,//20201224新增参数,用于右侧 小部件扩展
   "copyRight" :`Powered by <a href="https://blog.youchen.cf">CFblog-pro</a> & <a href="https://blog.arrontg.cf">CFBlog-Plus</a> & <a href="https://blog.gezhong.vip">CF-Blog </a>`,//自定义版权信息,建议保留大公无私的 Coudflare 和 作者 的链接
   "robots":`User-agent: *
